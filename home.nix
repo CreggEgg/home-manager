@@ -24,8 +24,14 @@
     ".config/hypr/hyprpaper.conf" = {
       source = config.lib.file.mkOutOfStoreSymlink "/home/churst/.config/home-manager/hypr/hyprpaper.conf";
     };
+    ".config/waybar/power.sh" = {
+      source = config.lib.file.mkOutOfStoreSymlink "/home/churst/.config/home-manager/power.sh";
+    };
     ".config/hypr/start.sh" = {
       source = config.lib.file.mkOutOfStoreSymlink "/home/churst/.config/home-manager/hypr/start.sh";
+    };
+    ".config/hypr/audio.sh" = {
+      source = config.lib.file.mkOutOfStoreSymlink "/home/churst/.config/home-manager/hypr/audio.sh";
     };
     "wallpapers/wallpaper.jpg" = {
       source = config.lib.file.mkOutOfStoreSymlink "/home/churst/.config/home-manager/hypr/wallpaper.jpg";
@@ -50,13 +56,40 @@
      pkgs.balena-cli
      pkgs.wineWowPackages.waylandFull
      pkgs.lutris
+     pkgs.kakoune
+     pkgs.spotify
+     pkgs.google-chrome
+     pkgs.appimage-run
+     pkgs.p7zip
+     pkgs.discord
+     pkgs.zellij
+     pkgs.odin
+     pkgs.ols
+     pkgs.rustup
+     pkgs.nodejs_20
+     pkgs.zlib
+     pkgs.nodePackages.svelte-language-server
+     pkgs.python3
+     pkgs.rare
+     pkgs.heroic
+     pkgs.opam
+     pkgs.gnumake42
+     pkgs.neovide
+     pkgs.ldtk
+     pkgs.mold
+     pkgs.clang
 
     # # You can also create simple shell scripts directly inside your
     # # configuration. For example, this adds a command 'my-hello' to your
     # # environment:
-    # (pkgs.writeShellScriptBin "my-hello" ''
-    #   echo "Hello, ${config.home.username}!"
-    # '')
+    (pkgs.writeShellScriptBin "edit-home" ''
+      nvim ~/.config/home-manager/home.nix
+      home-manager switch
+    '')
+    (pkgs.writeShellScriptBin "edit-system" ''
+      sudo nvim ~/system/nixos/configuration.nix
+      sudo nixos-rebuild switch --flake ~/system
+    '')
   ];
 
   # Home Manager is pretty good at managing dotfiles. The primary way to manage
@@ -73,6 +106,8 @@
     #   org.gradle.daemon.idletimeout=3600000
     # '';
   };
+  programs.bash.initExtra = "test -r /home/churst/.opam/opam-init/init.sh && . /home/churst/.opam/opam-init/init.sh > /dev/null 2> /dev/null || true";
+  
   
   programs.waybar = {
     enable = true;
@@ -82,13 +117,24 @@
       position = "top";
       modules-left = [ "custom/power" "hyprland/workspaces" ];
       modules-center = [ "clock" ];
-      modules-right = [ "pulseaudio" "battery" "tray"];
+      modules-right = [ "custom/pipewire" "pulseaudio" "battery" "tray"];
       "hyprland/workspaces" = {
         "on-click" = "activate";
         "all-outputs" = true;
       };
+      "custom/pipewire" = {
+        exec = "pw-volume status";
+        "return-type" = "json";
+        interval = "once";
+        signal = 8;
+        format = "{icon} {percentage}";
+        "format-icons" = {
+          mute = "x";
+          default = ["---" "--" "-"];
+        };
+      };
       "custom/power" = {
-        "on-click" = "poweroff";
+        "on-click" = "bash ~/.config/waybar/power.sh";
         format = "";
       };
       clock = {
