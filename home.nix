@@ -77,7 +77,14 @@
      pkgs.neovide
      pkgs.ldtk
      pkgs.mold
-     pkgs.clang
+     # pkgs.clang
+     # pkgs.rocmPackages_5.llvm.clang-unwrapped
+     pkgs.obs-studio
+     pkgs.kdePackages.dolphin
+     pkgs.alacritty
+     pkgs.gradle_7
+     pkgs.zulu17
+     pkgs.rust-bindgen
 
     # # You can also create simple shell scripts directly inside your
     # # configuration. For example, this adds a command 'my-hello' to your
@@ -117,21 +124,10 @@
       position = "top";
       modules-left = [ "custom/power" "hyprland/workspaces" ];
       modules-center = [ "clock" ];
-      modules-right = [ "custom/pipewire" "pulseaudio" "battery" "tray"];
+      modules-right = [  "pulseaudio" "battery" "tray"];
       "hyprland/workspaces" = {
         "on-click" = "activate";
         "all-outputs" = true;
-      };
-      "custom/pipewire" = {
-        exec = "pw-volume status";
-        "return-type" = "json";
-        interval = "once";
-        signal = 8;
-        format = "{icon} {percentage}";
-        "format-icons" = {
-          mute = "x";
-          default = ["---" "--" "-"];
-        };
       };
       "custom/power" = {
         "on-click" = "bash ~/.config/waybar/power.sh";
@@ -147,12 +143,12 @@
     }];
 
     style = ''
-      @define-color bg rgba(4, 20, 45, 0.50);
+      @define-color bg rgba(25, 25, 25, 1.0);
       @define-color bg-alt #252428;
       @define-color fg #f5f5f5;
       @define-color alert #f53c3c;
       @define-color disabled #a5a5a5;
-      @define-color bordercolor #29c8e5;
+      @define-color bordercolor #000000;
       @define-color highlight #FBD47F;
       @define-color activegreen #8fb666;
       
@@ -178,7 +174,7 @@
       .modules-left {
         background: @bg;
         border: 2px solid @bordercolor;
-        border-radius: 20px;
+        border-radius: 5px;
       
         padding-right: 5px;
         padding-left: 5px;
@@ -187,7 +183,7 @@
       .modules-right {
         background: @bg;
         border: 2px solid @bordercolor;
-        border-radius: 20px;
+        border-radius: 5px;
       
         padding-right: 5px;
         padding-left: 5px;
@@ -196,7 +192,7 @@
       .modules-center {
         background: @bg;
         border: 2px solid @bordercolor;
-        border-radius: 20px;
+        border-radius: 5px;
       
         padding-right: 5px;
         padding-left: 5px;
@@ -208,11 +204,13 @@
         /* Avoid rounded borders under each button name */
         border: none;
         border-radius: 0;
+        background: none;
+        border-left: 2px solid #000000;
       }
       
       /* https://github.com/Alexays/Waybar/wiki/FAQ#the-workspace-buttons-have-a-strange-hover-effect */
       button:hover {
-        background: inherit;
+        background-color: rgba(0, 0, 0, 0.75);
         box-shadow: inset 0 -3px transparent;
       }
       
